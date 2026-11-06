@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loja Escola | Gestão e Compras</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  </head>
+  <body>
+    <header class="topo-hero">
+      <div class="container-amplo topo-conteudo">
+        <div class="marca-info">
+          <span class="etiqueta-badge">Programação Back-End · Sprint 4</span>
+          <h1>Loja Escola</h1>
+          <p class="subtitulo">Sistema Integrado de Gestão de Clientes, Produtos e Carrinho</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="container-amplo grid-dashboard">
+      
+      <!-- PAINEL 1: CADASTRO DE CLIENTE -->
+      <section class="painel-card" aria-labelledby="titulo-cadastro-cliente">
+        <div class="painel-topo-destaque">
+          <span class="badge-numero">01</span>
+          <div>
+            <h2 id="titulo-cadastro-cliente">Novo Cliente</h2>
+            <p class="descricao-painel">Informe o nome, e-mail e telefone do cliente.</p>
+          </div>
+        </div>
+
+        <div class="painel-corpo">
+          <form id="formulario-cliente" action="/clientes" method="POST" novalidate>
+            <div class="campo-grupo">
+              <label for="cliente-nome">Nome do cliente *</label>
+              <input id="cliente-nome" name="nome" type="text" minlength="2" maxlength="100" placeholder="Ex.: Maria Silva" required />
+            </div>
+
+            <div class="grelha-campos-2">
+              <div class="campo-grupo">
+                <label for="cliente-email">E-mail *</label>
+                <input id="cliente-email" name="email" type="email" maxlength="120" placeholder="maria@email.com" required />
+              </div>
+
+              <div class="campo-grupo">
+                <label for="cliente-telefone">Telefone (opcional)</label>
+                <input id="cliente-telefone" name="telefone" type="tel" maxlength="20" placeholder="(11) 98765-4321" />
+              </div>
+            </div>
+
+            <button id="botao-cadastrar-cliente" type="submit" class="btn-acao-principal">Cadastrar cliente</button>
+          </form>
+          <p id="mensagem-cliente" class="mensagem" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <!-- PAINEL 2: CADASTRO DE PRODUTO -->
+      <section class="painel-card" aria-labelledby="titulo-cadastro-produto">
+        <div class="painel-topo-destaque">
+          <span class="badge-numero">02</span>
+          <div>
+            <h2 id="titulo-cadastro-produto">Novo Produto</h2>
+            <p class="descricao-painel">Preencha os dados do produto.</p>
+          </div>
+        </div>
+
+        <div class="painel-corpo">
+          <form id="formulario" action="/produtos" method="POST" novalidate>
+            <div class="grelha-campos-2">
+              <div class="campo-grupo">
+                <label for="nome">Nome do produto *</label>
+                <input id="nome" name="nome" type="text" minlength="3" maxlength="80" placeholder="Ex.: Caderno" required />
+              </div>
+
+              <div class="campo-grupo">
+                <label for="categoria">Categoria *</label>
+                <select id="categoria" name="categoria_id" required>
+                  <option value="">Selecione uma categoria</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="campos-numericos">
+              <div class="campo-grupo">
+                <label for="preco">Preço (R$) *</label>
+                <input id="preco" name="preco" type="number" min="0.01" step="0.01" placeholder="25,90" required />
+              </div>
+              <div class="campo-grupo">
+                <label for="estoque">Estoque *</label>
+                <input id="estoque" name="estoque" type="number" min="0" placeholder="10" required />
+              </div>
+            </div>
+
+            <button id="botao-cadastrar" type="submit" class="btn-acao-principal">Cadastrar produto</button>
+          </form>
+          <p id="mensagem" class="mensagem" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <!-- PAINEL 3: CARRINHO DE COMPRAS -->
+      <section class="painel-card painel-largura-total" aria-labelledby="titulo-carrinho">
+        <div class="painel-topo-destaque">
+          <span class="badge-numero">03</span>
+          <div>
+            <h2 id="titulo-carrinho">Carrinho de Compras</h2>
+            <p class="descricao-painel">Selecione o cliente e adicione os produtos desejados.</p>
+          </div>
+        </div>
+
+        <div class="painel-corpo">
+          <form id="formulario-carrinho" action="/carrinho" method="POST" novalidate>
+            <div class="grid-carrinho-form">
+              <div class="campo-grupo">
+                <label for="carrinho-cliente">Cliente *</label>
+                <select id="carrinho-cliente" name="cliente_id" required>
+                  <option value="">Selecione um cliente</option>
+                </select>
+              </div>
+
+              <div class="campo-grupo">
+                <label for="carrinho-produto">Produto *</label>
+                <select id="carrinho-produto" name="produto_id" required>
+                  <option value="">Selecione um produto</option>
+                </select>
+              </div>
+
+              <div class="campo-grupo">
+                <label for="carrinho-quantidade">Qtd. *</label>
+                <input id="carrinho-quantidade" name="quantidade" type="number" min="1" value="1" required />
+              </div>
+            </div>
+
+            <button id="botao-adicionar-carrinho" type="submit" class="btn-acao-principal">Adicionar ao carrinho</button>
+          </form>
+
+          <p id="mensagem-carrinho" class="mensagem" role="status" aria-live="polite"></p>
+
+          <div class="tabela-rolagem">
+            <table>
+              <caption>Itens no carrinho</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Produto</th>
+                  <th scope="col" class="texto-centro">Qtd.</th>
+                  <th scope="col" class="texto-direita">Preço Unitário</th>
+                  <th scope="col" class="texto-direita">Subtotal</th>
+                  <th scope="col" class="texto-centro">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="lista-carrinho">
+                <tr><td colspan="5" class="tabela-vazia">Selecione um cliente para visualizar o carrinho.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="rodape-carrinho">
+            <div class="carrinho-total">
+              <span>Total do Carrinho:</span>
+              <strong id="total-carrinho">R$ 0,00</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAINEL 4: CLIENTES CADASTRADOS -->
+      <section class="painel-card painel-largura-total" aria-labelledby="titulo-clientes">
+        <div class="painel-topo-destaque cabecalho-flex">
+          <div class="flex-titulos">
+            <span class="badge-numero">04</span>
+            <div>
+              <h2 id="titulo-clientes">Clientes Cadastrados</h2>
+              <p class="descricao-painel">Consulte os clientes registados no sistema.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="painel-corpo">
+          <p id="mensagem-lista-clientes" class="mensagem" role="status" aria-live="polite"></p>
+          <div class="tabela-rolagem">
+            <table>
+              <caption>Lista de Clientes</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Nome</th>
+                  <th scope="col">E-mail</th>
+                  <th scope="col">Telefone</th>
+                </tr>
+              </thead>
+              <tbody id="lista-clientes">
+                <!-- Conteúdo dinâmico via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAINEL 5: PRODUTOS CADASTRADOS -->
+      <section class="painel-card painel-largura-total" aria-labelledby="titulo-produtos">
+        <div class="painel-topo-destaque cabecalho-flex">
+          <div class="flex-titulos">
+            <span class="badge-numero">05</span>
+            <div>
+              <h2 id="titulo-produtos">Produtos Cadastrados</h2>
+              <p class="descricao-painel">Consulte o inventário disponível e respetivos preços.</p>
+            </div>
+          </div>
+          <button id="botao-atualizar" type="button" class="secundario">
+            <span aria-hidden="true">↻</span> Atualizar lista
+          </button>
+        </div>
+
+        <div class="painel-corpo">
+          <p id="mensagem-lista" class="mensagem" role="status" aria-live="polite"></p>
+          <div class="tabela-rolagem">
+            <table>
+              <caption>Catálogo da loja</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Produto</th>
+                  <th scope="col">Categoria</th>
+                  <th scope="col" class="texto-direita">Preço</th>
+                  <th scope="col" class="texto-centro">Estoque</th>
+                </tr>
+              </thead>
+              <tbody id="lista-produtos">
+                <!-- Conteúdo dinâmico via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="rodape-pagina">
+      <div class="container-amplo">
+        <p>Loja Escola · Laboratório de Desenvolvimento de Sistemas</p>
+      </div>
+    </footer>
+  </body>
+</html>
